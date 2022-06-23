@@ -1,14 +1,25 @@
-package com.example.demoamir.models;
+package com.example.demoamir.movies.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.lang.annotation.Repeatable;
 import java.time.LocalDate;
 
-
+@Entity
+@Table
 public class Movie {
-    private String title;
+
+    @Id
+    @GeneratedValue
     private int id;
+
+    private String title;
     private String description;
     private LocalDate years;
+
+
 
     public String getTitle() {
         return title;
@@ -18,13 +29,8 @@ public class Movie {
         this.title = title;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+
 
     public String getDescription() {
         return description;
@@ -40,5 +46,13 @@ public class Movie {
 
     public void setYears(LocalDate years) {
         this.years = years;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }
