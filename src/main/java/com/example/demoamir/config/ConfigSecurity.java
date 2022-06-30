@@ -20,58 +20,42 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class ConfigSecurity {
+public class  ConfigSecurity {
 
+    @Autowired
     private DataSource dataSource;
 
-   /* @Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        *//*http
-                .authorizeRequests().antMatchers("/", "/movies/{id}", "/login").permitAll()
+        http.cors().and().csrf().disable()
+                .authorizeRequests().antMatchers("/", "/movies/{id}", "/login","signup").permitAll()
                 .and().authorizeRequests().antMatchers("/movie/create")
                 .hasAuthority("ADMIN")
                 .and().authorizeRequests().antMatchers("/testAuth")
                 .hasAuthority("USER")
-
                 .anyRequest().authenticated()
+                .and().formLogin()
+                .loginPage("/login")
                 .and().logout().permitAll()
                 .and().exceptionHandling()
+        ;
 
-        ;*//*
 
-        http.cors().and().csrf().disable()
-                .authorizeRequests()
-                // add your resources here. By default, spring security blocks all resources that is not under /resources/**
-                .antMatchers( "/", "/login").permitAll()
-                // prevent spring security from blocking some pages that doesn't require authentication to be access here.
-                .antMatchers("/forgot-password", "/change-password").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                // login configuration
-                *//*.formLogin()
-                .loginPage("/login") // can either be mapping or file
-                .permitAll()
-                .and()*//*
-                // logout configuration
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .clearAuthentication(true)
-                .permitAll();
+
 
         return http.build();
-    }*/
+    }
 
+    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .withDefaultSchema()
-                .withUser(User.withUsername("username")
-                        .password(passwordEncoder().encode("password"))
-                        .roles("USER"));
+
+        auth.jdbcAuthentication().dataSource(this.dataSource)
+                .passwordEncoder(new BCryptPasswordEncoder())
+                .usersByUsernameQuery("select email,password,enabled from user where email=?")
+                .authoritiesByUsernameQuery("select email,role from authorities where email=?")
+        ;
+
     }
     @Bean
     public PasswordEncoder passwordEncoder() {

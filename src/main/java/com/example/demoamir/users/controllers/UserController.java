@@ -3,10 +3,12 @@ package com.example.demoamir.users.controllers;
 import com.example.demoamir.users.models.User;
 import com.example.demoamir.users.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class UserController {
 
 	private UserService userService;
@@ -15,11 +17,12 @@ public class UserController {
 		System.out.println("hello");
 		return null ;
 	}
-/*	@GetMapping("/login")
-	public ResponseEntity login (){
-		System.out.println("hello");
-		return null ;
-	}*/
+
+	@GetMapping("/login")
+	public String viewLoginPage(Model model) {
+		model.addAttribute("user", new User());
+		return "login";
+	}
 
 	@GetMapping("/testAuth")
 	public  ResponseEntity testAuthRoute (){
